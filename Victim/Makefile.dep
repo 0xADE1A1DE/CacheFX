@@ -1,0 +1,55 @@
+AESVictim.cpp.o: AESVictim.cpp \
+ $(INCLDIR)/MMU/MMU.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/MemHandle/MemHandle.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h \
+ $(INCLDIR)/CLArgs.h \
+ $(INCLDIR)/PlaintextKeyPairGenerator/AESPlaintextKeyPairGenerator.h \
+ $(INCLDIR)/PlaintextKeyPairGenerator/PlaintextKeyPairGenerator.h \
+ $(INCLDIR)/Random.h \
+ $(INCLDIR)/Victim/AESVictim.h \
+ $(INCLDIR)/Victim/Victim.h
+BinaryVictim.cpp.o: BinaryVictim.cpp \
+ $(INCLDIR)/MMU/MMU.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/MemHandle/MemHandle.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h \
+ $(INCLDIR)/CLArgs.h \
+ $(INCLDIR)/PlaintextKeyPairGenerator/BinaryPlaintextKeyPairGenerator.h \
+ $(INCLDIR)/PlaintextKeyPairGenerator/PlaintextKeyPairGenerator.h \
+ $(INCLDIR)/Random.h \
+ $(INCLDIR)/Victim/BinaryVictim.h \
+ $(INCLDIR)/Victim/Victim.h
+SingleAccessVictim.cpp.o: SingleAccessVictim.cpp \
+ $(INCLDIR)/MMU/MMU.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/MemHandle/MemHandle.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h \
+ $(INCLDIR)/CLArgs.h \
+ $(INCLDIR)/PlaintextKeyPairGenerator/BinaryPlaintextKeyPairGenerator.h \
+ $(INCLDIR)/PlaintextKeyPairGenerator/PlaintextKeyPairGenerator.h \
+ $(INCLDIR)/Random.h \
+ $(INCLDIR)/Victim/SingleAccessVictim.h \
+ $(INCLDIR)/Victim/Victim.h
+SquareMultVictim.cpp.o: SquareMultVictim.cpp \
+ $(INCLDIR)/Attacker/Attacker.h \
+ $(INCLDIR)/MemHandle/MemHandle.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h \
+ $(INCLDIR)/CLArgs.h \
+ $(INCLDIR)/Victim/Victim.h \
+ $(INCLDIR)/PlaintextKeyPairGenerator/PlaintextKeyPairGenerator.h \
+ $(INCLDIR)/MMU/MMU.h \
+ $(INCLDIR)/MemArray.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/PlaintextKeyPairGenerator/SquareMultPlaintextKeyPairGenerator.h \
+ $(INCLDIR)/Random.h \
+ $(INCLDIR)/Victim/SquareMultVictim.h

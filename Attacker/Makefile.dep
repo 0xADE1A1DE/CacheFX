@@ -1,0 +1,39 @@
+Attacker.cpp.o: Attacker.cpp \
+ $(INCLDIR)/Attacker/Attacker.h \
+ $(INCLDIR)/MemHandle/MemHandle.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h \
+ $(INCLDIR)/CLArgs.h \
+ $(INCLDIR)/Victim/Victim.h \
+ $(INCLDIR)/PlaintextKeyPairGenerator/PlaintextKeyPairGenerator.h \
+ $(INCLDIR)/Random.h
+EvictionAttacker.cpp.o: EvictionAttacker.cpp \
+ $(INCLDIR)/Attacker/Attacker.h \
+ $(INCLDIR)/MemHandle/MemHandle.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h \
+ $(INCLDIR)/CLArgs.h \
+ $(INCLDIR)/Victim/Victim.h \
+ $(INCLDIR)/PlaintextKeyPairGenerator/PlaintextKeyPairGenerator.h \
+ $(INCLDIR)/Attacker/EvictionAttacker.h \
+ $(INCLDIR)/Attacker/Attacker.h \
+ $(INCLDIR)/MMU/MMU.h \
+ $(INCLDIR)/Profiling/EvictionSetSizeProfiling.h \
+ $(INCLDIR)/Profiling/Profiling.h \
+ $(INCLDIR)/Victim/SingleAccessVictim.h
+OccupancyAttacker.cpp.o: OccupancyAttacker.cpp \
+ $(INCLDIR)/Attacker/OccupancyAttacker.h \
+ $(INCLDIR)/Attacker/Attacker.h \
+ $(INCLDIR)/MemHandle/MemHandle.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h \
+ $(INCLDIR)/CLArgs.h \
+ $(INCLDIR)/Victim/Victim.h \
+ $(INCLDIR)/PlaintextKeyPairGenerator/PlaintextKeyPairGenerator.h \
+ $(INCLDIR)/MMU/MMU.h

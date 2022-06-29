@@ -1,0 +1,14 @@
+AESPlaintextKeyPairGenerator.cpp.o: AESPlaintextKeyPairGenerator.cpp \
+ $(INCLDIR)/PlaintextKeyPairGenerator/AESPlaintextKeyPairGenerator.h \
+ $(INCLDIR)/PlaintextKeyPairGenerator/PlaintextKeyPairGenerator.h \
+ $(INCLDIR)/Random.h
+BinaryPlaintextKeyPairGenerator.cpp.o: \
+ BinaryPlaintextKeyPairGenerator.cpp \
+ $(INCLDIR)/PlaintextKeyPairGenerator/BinaryPlaintextKeyPairGenerator.h \
+ $(INCLDIR)/PlaintextKeyPairGenerator/PlaintextKeyPairGenerator.h \
+ $(INCLDIR)/Random.h
+SquareMultPlaintextKeyPairGenerator.cpp.o: \
+ SquareMultPlaintextKeyPairGenerator.cpp \
+ $(INCLDIR)/PlaintextKeyPairGenerator/PlaintextKeyPairGenerator.h \
+ $(INCLDIR)/PlaintextKeyPairGenerator/SquareMultPlaintextKeyPairGenerator.h \
+ $(INCLDIR)/Random.h

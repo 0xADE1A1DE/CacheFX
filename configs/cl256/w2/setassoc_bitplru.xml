@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<CacheHierarchy>
+	<Cache Type="set-associative" NLines="256" NWays="2" ReplAlg="bit-plru" Level="1" />
+</CacheHierarchy>

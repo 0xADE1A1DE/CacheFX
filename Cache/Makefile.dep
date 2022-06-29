@@ -1,0 +1,80 @@
+AssocCache.cpp.o: AssocCache.cpp \
+ $(INCLDIR)/Cache/AssocCache.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h
+CacheHierarchy.cpp.o: CacheHierarchy.cpp \
+ $(INCLDIR)/Cache/CacheHierarchy.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h \
+ $(INCLDIR)/Cache/SetAssocCache.h \
+ $(INCLDIR)/Cache/AssocCache.h \
+ $(INCLDIR)/Cache/Cache.h
+CEASERCache.cpp.o: CEASERCache.cpp \
+ $(INCLDIR)/Cache/CEASERCache.h \
+ $(INCLDIR)/Cache/SetAssocCache.h \
+ $(INCLDIR)/Cache/AssocCache.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h \
+ $(INCLDIR)/crypto/speck.h
+CEASERSCache.cpp.o: CEASERSCache.cpp \
+ $(INCLDIR)/Cache/CEASERSCache.h \
+ $(INCLDIR)/Cache/AssocCache.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h \
+ $(INCLDIR)/crypto/speck.h
+NewCache.cpp.o: NewCache.cpp \
+ $(INCLDIR)/Cache/NewCache.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h \
+ $(INCLDIR)/CacheLine/CacheLine.h
+PhantomCache.cpp.o: PhantomCache.cpp \
+ $(INCLDIR)/Cache/PhantomCache.h \
+ $(INCLDIR)/Cache/SetAssocCache.h \
+ $(INCLDIR)/Cache/AssocCache.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h \
+ $(INCLDIR)/crypto/speck.h
+PLcache.cpp.o: PLcache.cpp \
+ $(INCLDIR)/Cache/PLcache.h \
+ $(INCLDIR)/Cache/AssocCache.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h \
+ $(INCLDIR)/Cache/SetAssocCache.h \
+ $(INCLDIR)/Cache/AssocCache.h
+ScatterCache.cpp.o: ScatterCache.cpp \
+ $(INCLDIR)/Cache/ScatterCache.h \
+ $(INCLDIR)/Cache/AssocCache.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h \
+ $(INCLDIR)/crypto/speck.h
+SetAssocCache.cpp.o: SetAssocCache.cpp \
+ $(INCLDIR)/Cache/SetAssocCache.h \
+ $(INCLDIR)/Cache/AssocCache.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h
+WayPartitionCache.cpp.o: WayPartitionCache.cpp \
+ $(INCLDIR)/Cache/WayPartitionCache.h \
+ $(INCLDIR)/Cache/SetAssocCache.h \
+ $(INCLDIR)/Cache/AssocCache.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h

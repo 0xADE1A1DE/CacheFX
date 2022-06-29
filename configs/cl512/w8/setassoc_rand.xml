@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<CacheHierarchy>
+	<Cache Type="set-associative" NLines="512" NWays="8" ReplAlg="random" Level="1" />
+</CacheHierarchy>

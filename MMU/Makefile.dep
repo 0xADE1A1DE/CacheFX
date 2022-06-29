@@ -1,0 +1,10 @@
+DirectMMU.cpp.o: DirectMMU.cpp \
+ $(INCLDIR)/MMU/DirectMMU.h \
+ $(INCLDIR)/Cache/Cache.h \
+ $(INCLDIR)/CacheContext.h \
+ $(INCLDIR)/statistics.h \
+ $(INCLDIR)/types.h \
+ $(INCLDIR)/MMU/MMU.h \
+ $(INCLDIR)/MemHandle/MemHandle.h \
+ $(INCLDIR)/CLArgs.h \
+ $(INCLDIR)/MemHandle/DirectMemHandle.h

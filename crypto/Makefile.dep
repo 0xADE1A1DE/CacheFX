@@ -1,0 +1,4 @@
+qarma64.c.o: qarma64.c \
+ $(INCLDIR)/crypto/qarma64.h
+speck.cpp.o: speck.cpp \
+ $(INCLDIR)/crypto/speck.h

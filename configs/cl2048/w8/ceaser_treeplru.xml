@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<CacheHierarchy>
+	<Cache Type="ceaser" NLines="2048" NWays="8" ReplAlg="tree-plru" Level="1" />
+</CacheHierarchy>

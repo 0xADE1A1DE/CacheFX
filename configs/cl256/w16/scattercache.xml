@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<CacheHierarchy>
+	<Cache Type="scatter-cache" NLines="256" NWays="16" Level="1" />
+</CacheHierarchy>

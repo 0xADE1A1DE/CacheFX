@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<CacheHierarchy>
+	<Cache Type="PLcache" NLines="256" NWays="8" ReplAlg="lru" Level="1" />
+</CacheHierarchy>

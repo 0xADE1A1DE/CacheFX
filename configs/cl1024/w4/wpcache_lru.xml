@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<CacheHierarchy>
+	<Cache Type="way-partition" NLines="1024" NWays="4" NSecWays="1" ReplAlg="lru" Level="1" />
+</CacheHierarchy>

@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<CacheHierarchy>
+	<Cache Type="phantom" NLines="512" NWays="8" NRandomSets="16" ReplAlg="random" Level="1" />
+</CacheHierarchy>
