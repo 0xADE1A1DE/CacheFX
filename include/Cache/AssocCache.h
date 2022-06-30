@@ -42,12 +42,18 @@ protected:
   int32_t treePLRULevels;
   bool* treePLRU;
   bool* bitPLRU;
+  int32_t* srrip;
+  uint32_t srripM;
   int32_t size;
   uint32_t clock;
   replAlg algorithm;
+  uint32_t psel_bits;
+  uint32_t psel;
+  double bip_throttle;
+  double brrip_long_chance;
   bool invalidFirst;
 
-  void access(int32_t way);
+  void access(int32_t way, bool newEntry = false);
 
 public:
   AssocCache(int32_t size) : AssocCache(REPL_LRU, size){};

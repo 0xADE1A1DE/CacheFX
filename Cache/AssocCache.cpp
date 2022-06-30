@@ -20,6 +20,8 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
+#include <algorithm>
+#include <limits>
 
 #include <Cache/AssocCache.h>
 #include <types.h>
@@ -29,10 +31,15 @@ const char* AssocCache::CACHE_TYPESTR = "associative";
 AssocCache::AssocCache(replAlg algo, int32_t size, bool invalidFirst)
     : size(size), algorithm(algo), invalidFirst(invalidFirst)
 {
+  srripM = 5;
+  bip_throttle = 0.01;
+  brrip_long_chance = 0.01;
+
   entries = new cacheEntry[size];
   treePLRU = new bool[size];
   bitPLRU = new bool[size];
-
+  srrip = new int32_t[size];
+ 
   treePLRULevels = (int32_t)log2(size);
   if ((algorithm == REPL_TREE_PLRU) &&
       ((int32_t)pow(2, (double)treePLRULevels) != size))
@@ -51,19 +58,41 @@ AssocCache::AssocCache(replAlg algo, int32_t size, bool invalidFirst)
     entries[i].context = DEFAULT_CACHE_CONTEXT;
     treePLRU[i] = false;
     bitPLRU[i] = false;
+    srrip[i] = 0;
   }
 }
 
 AssocCache::~AssocCache()
 {
+  delete[] srrip;
   delete[] entries;
   delete[] treePLRU;
   delete[] bitPLRU;
 }
 
-void AssocCache::access(int32_t way)
+void AssocCache::access(int32_t way, bool newEntry)
 {
-  entries[way].accessTime = clock++;
+  const auto timestamp_mru = [&]() {
+    entries[way].accessTime = clock++;
+  };
+  const auto timestamp_lru = [&]() {
+    entries[way].accessTime = std::numeric_limits<uint32_t>::max() - 100;
+  };
+  if (newEntry && algorithm == REPL_LIP) {
+    timestamp_lru();
+  }
+  else if (newEntry && algorithm == REPL_BIP) {
+    const double mru_chance = double(1 + (rand() % 100)) / double(100);
+    if (mru_chance <= bip_throttle)  {
+      // printf("MRU\n");
+      timestamp_mru();
+    }
+    else 
+      timestamp_lru();
+  }
+  else {
+    timestamp_mru();
+  }
   if (!bitPLRU[way])
   {
     bitPLRUBitsSet++;
@@ -86,6 +115,28 @@ void AssocCache::access(int32_t way)
     nodeOffset = nodeOffset * 2 + bit;
     levelOffset = levelOffset * 2;
   }
+  
+  // if (!newEntry) {
+    // printf("srrip hit, old value: %d\n", srrip[way]);
+  // }
+  if (newEntry) {
+    const double long_chance = double(1 + (rand() % 100)) / double(100);
+    // If replacement policy is BRRIP, the majority of cases is distant rrpv.
+    if (algorithm == REPL_BRRIP && long_chance > brrip_long_chance) {
+      srrip[way] = pow(2, srripM) - 1;
+    }
+    else // In a minority of cases for BRRIP, or for SRRIP set long rrpv.
+      srrip[way] = pow(2, srripM) - 2;
+  }
+  else 
+    srrip[way] = std::max(0, srrip[way] - 1);
+    
+  // if (newEntry) {
+  //   printf("srrip new entry insert num: %d\n", srrip[way]);
+  // } else {
+  //   printf("srrip hit, new value: %d\n", srrip[way]);
+  // }
+
 }
 
 int32_t AssocCache::readCl(tag_t cl, const CacheContext& context,
@@ -108,18 +159,26 @@ int32_t AssocCache::readCl(tag_t cl, const CacheContext& context,
   {
     entries[free].tag = cl;
     response.push_back(CacheResponse(false));
-    access(free);
+    access(free, true);
     return 0;
   }
+  
 
   switch (algorithm)
   {
-  case REPL_LRU: {
+  case REPL_LRU: 
+  case REPL_LIP:
+  case REPL_BIP: {
     // Search for oldest entry.  Integer overflow can break LRU in some extreme
     // cases
     uint32_t oldesttime = 0;
     for (int32_t i = 0; i < size; i++)
     {
+      if (entries[i].accessTime == std::numeric_limits<uint32_t>::max() - 100) {
+        // printf("lip break\n");
+        free = i;
+        break;
+      }
       uint32_t time = clock - entries[i].accessTime;
       if (time > oldesttime)
       {
@@ -127,6 +186,7 @@ int32_t AssocCache::readCl(tag_t cl, const CacheContext& context,
         free = i;
       }
     }
+    // printf("evicted timestamp = %u\n", entries[free].accessTime);
     break;
   }
   case REPL_BIT_PLRU: {
@@ -156,13 +216,32 @@ int32_t AssocCache::readCl(tag_t cl, const CacheContext& context,
     free = nodeOffset;
     break;
   }
+  case REPL_SRRIP: 
+  case REPL_BRRIP: {
+    // std::cout << "SRRIP" << std::endl;
+    while (true)
+    {
+      for (int32_t i = 0; i < size; i++) {
+        if (srrip[i] == (pow(2, srripM) - 1)) {
+          free = i;
+          goto __srrip_found;
+        }
+      }
+      for (int32_t i = 0; i < size; i++) {
+        srrip[i] = std::min(int32_t(pow(2, srripM) - 1), srrip[i] + 1);
+      }
+    }
+    __srrip_found:
+    // printf("srrip evicted num: %d\n", srrip[free]);
+    break; 
+  }
   case REPL_RANDOM:
     free = random() % size;
     break;
   }
   response.push_back(CacheResponse(false, entries[free].tag));
   entries[free].tag = cl;
-  access(free);
+  access(free, true);
   return 0;
 }
 
@@ -195,6 +274,7 @@ void AssocCache::setAlgorithm(replAlg alg)
     entries[i].accessTime = 0;
     bitPLRU[i] = false;
     treePLRU[i] = false;
+    srrip[i] = 0;
   }
 }
 

@@ -29,7 +29,7 @@ SetAssocCache::SetAssocCache(replAlg alg, int32_t nsets, int32_t nways)
   for (int32_t i = 0; i < nsets; i++)
     sets[i] = new AssocCache(alg, nways);
 
-  if (sets > 0)
+  if ((uintptr_t)sets > 0)
   {
     algorithm = sets[0]->getAlgorithm();
   }
@@ -52,7 +52,7 @@ void SetAssocCache::setAlgorithm(replAlg alg)
   for (int32_t i = 0; i < nsets; i++)
     sets[i]->setAlgorithm(alg);
 
-  if (sets > 0)
+  if ((uintptr_t)sets > 0)
   {
     algorithm = sets[0]->getAlgorithm();
   }

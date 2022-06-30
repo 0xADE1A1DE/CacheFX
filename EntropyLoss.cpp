@@ -45,6 +45,12 @@ EntropyLoss::EntropyLoss()
   repAlgStrMap[REPL_BIT_PLRU] = "bit-plru";
   repAlgStrMap[REPL_TREE_PLRU] = "tree-plru";
   repAlgStrMap[REPL_RANDOM] = "random";
+  repAlgStrMap[REPL_SRRIP] = "srrip";
+  repAlgStrMap[REPL_BRRIP] = "brrip";
+  repAlgStrMap[REPL_DRRIP] = "drrip";
+  repAlgStrMap[REPL_LIP] = "lip";
+  repAlgStrMap[REPL_BIP] = "bip";
+  repAlgStrMap[REPL_DIP] = "dip";
 }
 
 EntropyLoss::~EntropyLoss()

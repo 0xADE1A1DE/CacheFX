@@ -164,7 +164,7 @@ void PLcache::setAlgorithm(replAlg alg)
   for (int32_t i = 0; i < nsets; i++)
     sets[i]->setAlgorithm(alg);
 
-  if (sets > 0)
+  if ((uintptr_t)sets > 0)
   {
     algorithm = sets[0]->getAlgorithm();
   }

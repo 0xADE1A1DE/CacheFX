@@ -49,6 +49,8 @@ CacheFactory.cpp.o: CacheFactory.cpp \
  $(INCLDIR)/Cache/PhantomCache.h \
  $(INCLDIR)/Cache/ScatterCache.h \
  $(INCLDIR)/Cache/WayPartitionCache.h \
+ $(INCLDIR)/Cache/DIPCache.h \
+ $(INCLDIR)/Cache/DRRIPCache.h \
  $(INCLDIR)/CacheFactory/CacheFactory.h \
  $(INCLDIR)/../pugixml/src/pugixml.hpp \
  $(INCLDIR)/../pugixml/src/pugiconfig.hpp

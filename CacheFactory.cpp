@@ -18,10 +18,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <Cache/CEASERCache.h>
 #include <Cache/CEASERSCache.h>
 #include <Cache/CacheHierarchy.h>
+#include <Cache/DIPCache.h>
+#include <Cache/DRRIPCache.h>
 #include <Cache/NewCache.h>
 #include <Cache/PLcache.h>
 #include <Cache/PhantomCache.h>
@@ -59,10 +61,22 @@ CacheFactory::CacheFactory()
   repAlgStrMap[REPL_BIT_PLRU] = "bit-plru";
   repAlgStrMap[REPL_TREE_PLRU] = "tree-plru";
   repAlgStrMap[REPL_RANDOM] = "random";
+  repAlgStrMap[REPL_LIP] = "lip";
+  repAlgStrMap[REPL_BIP] = "bip";
+  repAlgStrMap[REPL_DIP] = "dip";
+  repAlgStrMap[REPL_SRRIP] = "srrip";
+  repAlgStrMap[REPL_BRRIP] = "brrip";
+  repAlgStrMap[REPL_DRRIP] = "drrip";
   strRepAlgMap["lru"] = REPL_LRU;
   strRepAlgMap["random"] = REPL_RANDOM;
   strRepAlgMap["bit-plru"] = REPL_BIT_PLRU;
   strRepAlgMap["tree-plru"] = REPL_TREE_PLRU;
+  strRepAlgMap["srrip"] = REPL_SRRIP;
+  strRepAlgMap["brrip"] = REPL_BRRIP;
+  strRepAlgMap["drrip"] = REPL_DRRIP;
+  strRepAlgMap["lip"] = REPL_LIP;
+  strRepAlgMap["bip"] = REPL_BIP;
+  strRepAlgMap["dip"] = REPL_DIP;
 }
 
 CacheFactory::~CacheFactory() {}
@@ -81,50 +95,62 @@ std::unique_ptr<Cache> CacheFactory::createCache(const std::string& description,
                                                  int32_t nWays,
                                                  replAlg replAlgorithm)
 {
-  if (description == SetAssocCache::CACHE_TYPESTR)
+  if (replAlgorithm != REPL_DIP)
+  {
+    if (description == SetAssocCache::CACHE_TYPESTR)
+    {
+      return std::unique_ptr<Cache>(
+          new SetAssocCache(replAlgorithm, nCacheLines / nWays, nWays));
+    }
+    else if (description == AssocCache::CACHE_TYPESTR)
+    {
+      return std::unique_ptr<Cache>(new AssocCache(replAlgorithm, nCacheLines));
+    }
+    else if (description == ScatterCache::CACHE_TYPESTR)
+    {
+      return std::unique_ptr<Cache>(
+          new ScatterCache(nCacheLines / nWays, nWays));
+    }
+    else if (description == NewCache::CACHE_TYPESTR)
+    {
+      return std::unique_ptr<Cache>(
+          new NewCache((int32_t)log2(nCacheLines), 2));
+    }
+    else if (description == AssocPLcache::CACHE_TYPESTR)
+    {
+      return std::unique_ptr<Cache>(
+          new AssocPLcache(replAlgorithm, nCacheLines));
+    }
+    else if (description == PLcache::CACHE_TYPESTR)
+    {
+      return std::unique_ptr<Cache>(
+          new PLcache(replAlgorithm, nCacheLines / nWays, nWays));
+    }
+    else if (description == WayPartitionCache::CACHE_TYPESTR)
+    {
+      return std::unique_ptr<Cache>(
+          new WayPartitionCache(replAlgorithm, nCacheLines / nWays, nWays, 1));
+    }
+    else if (description == CEASERCache::CACHE_TYPESTR)
+    {
+      return std::unique_ptr<Cache>(
+          new CEASERCache(replAlgorithm, nCacheLines / nWays, nWays));
+    }
+    else if (description == CEASERSCache::CACHE_TYPESTR)
+    {
+      return std::unique_ptr<Cache>(
+          new CEASERSCache(nCacheLines / nWays, nWays));
+    }
+    else if (description == PhantomCache::CACHE_TYPESTR)
+    {
+      return std::unique_ptr<Cache>(
+          new PhantomCache(nCacheLines / nWays, nWays, 2));
+    }
+  }
+  else
   {
     return std::unique_ptr<Cache>(
-        new SetAssocCache(replAlgorithm, nCacheLines / nWays, nWays));
-  }
-  else if (description == AssocCache::CACHE_TYPESTR)
-  {
-    return std::unique_ptr<Cache>(new AssocCache(replAlgorithm, nCacheLines));
-  }
-  else if (description == ScatterCache::CACHE_TYPESTR)
-  {
-    return std::unique_ptr<Cache>(new ScatterCache(nCacheLines / nWays, nWays));
-  }
-  else if (description == NewCache::CACHE_TYPESTR)
-  {
-    return std::unique_ptr<Cache>(new NewCache((int32_t)log2(nCacheLines), 2));
-  }
-  else if (description == AssocPLcache::CACHE_TYPESTR)
-  {
-    return std::unique_ptr<Cache>(new AssocPLcache(replAlgorithm, nCacheLines));
-  }
-  else if (description == PLcache::CACHE_TYPESTR)
-  {
-    return std::unique_ptr<Cache>(
-        new PLcache(replAlgorithm, nCacheLines / nWays, nWays));
-  }
-  else if (description == WayPartitionCache::CACHE_TYPESTR)
-  {
-    return std::unique_ptr<Cache>(
-        new WayPartitionCache(replAlgorithm, nCacheLines / nWays, nWays, 1));
-  }
-  else if (description == CEASERCache::CACHE_TYPESTR)
-  {
-    return std::unique_ptr<Cache>(
-        new CEASERCache(replAlgorithm, nCacheLines / nWays, nWays));
-  }
-  else if (description == CEASERSCache::CACHE_TYPESTR)
-  {
-    return std::unique_ptr<Cache>(new CEASERSCache(nCacheLines / nWays, nWays));
-  }
-  else if (description == PhantomCache::CACHE_TYPESTR)
-  {
-    return std::unique_ptr<Cache>(
-        new PhantomCache(nCacheLines / nWays, nWays, 2));
+        new DIPCache(description, REPL_DIP, nCacheLines, nWays, 2));
   }
 
   return std::unique_ptr<Cache>(nullptr);
@@ -227,82 +253,106 @@ std::unique_ptr<Cache> CacheFactory::deserializeCache(pugi::xml_node xmlCache)
   std::unique_ptr<Cache> cache = nullptr;
   std::string cacheType(xmlCache.attribute(XMLNODE_CACHE_TYPE).as_string());
 
-  if (cacheType == SetAssocCache::CACHE_TYPESTR)
+  if (strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG).as_string()] ==
+      REPL_DIP)
   {
-    int32_t nWays = xmlCache.attribute(XMLNODE_CACHE_NWAYS).as_int();
-    cache.reset(new SetAssocCache(
+    cache.reset(new DIPCache(
+        cacheType,
         strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG).as_string()],
-        xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int() / nWays, nWays));
-  }
-  else if (cacheType == AssocCache::CACHE_TYPESTR)
-  {
-    cache.reset(new AssocCache(
-        strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG).as_string()],
-        xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int()));
-  }
-  else if (cacheType == ScatterCache::CACHE_TYPESTR)
-  {
-    int32_t nWays = xmlCache.attribute(XMLNODE_CACHE_NWAYS).as_int();
-    cache.reset(new ScatterCache(
-        xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int() / nWays, nWays));
-  }
-  else if (cacheType == NewCache::CACHE_TYPESTR)
-  {
-    size_t nbits = 0;
-    if (xmlCache.attribute(XMLNODE_CACHE_NBITS).empty())
-    {
-      nbits = (int32_t)log2(xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int());
-    }
-    else
-    {
-      nbits = xmlCache.attribute(XMLNODE_CACHE_NBITS).as_int();
-    }
-    cache.reset(
-        new NewCache(nbits, xmlCache.attribute(XMLNODE_CACHE_KBITS).as_int()));
-  }
-  else if (cacheType == WayPartitionCache::CACHE_TYPESTR)
-  {
-    int32_t nWays = xmlCache.attribute(XMLNODE_CACHE_NWAYS).as_int();
-    int32_t nSecWays = xmlCache.attribute(XMLNODE_CACHE_NSECWAYS).as_int();
-    cache.reset(new WayPartitionCache(
-        strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG).as_string()],
-        xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int() / nWays, nWays,
-        nSecWays));
-  }
-  else if (cacheType == PLcache::CACHE_TYPESTR)
-  {
-    int32_t nWays = xmlCache.attribute(XMLNODE_CACHE_NWAYS).as_int();
-    cache.reset(new PLcache(
-        strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG).as_string()],
-        xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int() / nWays, nWays));
-  }
-  else if (cacheType == AssocPLcache::CACHE_TYPESTR)
-  {
-    cache.reset(new AssocPLcache(
-        strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG).as_string()],
-        xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int()));
-  }
-  else if (cacheType == CEASERCache::CACHE_TYPESTR)
-  {
-    int32_t nWays = xmlCache.attribute(XMLNODE_CACHE_NWAYS).as_int();
-    cache.reset(new CEASERCache(
-        strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG).as_string()],
-        xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int() / nWays, nWays));
-  }
-  else if (cacheType == CEASERSCache::CACHE_TYPESTR)
-  {
-    int32_t nWays = xmlCache.attribute(XMLNODE_CACHE_NWAYS).as_int();
-    cache.reset(new CEASERSCache(
-        xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int() / nWays, nWays,
-        xmlCache.attribute(XMLNODE_CACHE_NPARTITIONS).as_int()));
-  }
-  else if (cacheType == PhantomCache::CACHE_TYPESTR)
-  {
-    int32_t nWays = xmlCache.attribute(XMLNODE_CACHE_NWAYS).as_int();
-    cache.reset(new PhantomCache(
-        strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG).as_string()],
-        xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int() / nWays, nWays,
+        xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int(),
+        xmlCache.attribute(XMLNODE_CACHE_NWAYS).as_int(),
         xmlCache.attribute(XMLNODE_CACHE_NRANDOMSETS).as_int()));
+  }
+  else if (strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG)
+                            .as_string()] == REPL_DRRIP)
+  {
+    cache.reset(new DRRIPCache(
+        cacheType,
+        strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG).as_string()],
+        xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int(),
+        xmlCache.attribute(XMLNODE_CACHE_NWAYS).as_int(),
+        xmlCache.attribute(XMLNODE_CACHE_NRANDOMSETS).as_int()));
+  }
+  else
+  {
+    if (cacheType == SetAssocCache::CACHE_TYPESTR)
+    {
+      int32_t nWays = xmlCache.attribute(XMLNODE_CACHE_NWAYS).as_int();
+      cache.reset(new SetAssocCache(
+          strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG).as_string()],
+          xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int() / nWays, nWays));
+    }
+    else if (cacheType == AssocCache::CACHE_TYPESTR)
+    {
+      cache.reset(new AssocCache(
+          strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG).as_string()],
+          xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int()));
+    }
+    else if (cacheType == ScatterCache::CACHE_TYPESTR)
+    {
+      int32_t nWays = xmlCache.attribute(XMLNODE_CACHE_NWAYS).as_int();
+      cache.reset(new ScatterCache(
+          xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int() / nWays, nWays));
+    }
+    else if (cacheType == NewCache::CACHE_TYPESTR)
+    {
+      size_t nbits = 0;
+      if (xmlCache.attribute(XMLNODE_CACHE_NBITS).empty())
+      {
+        nbits =
+            (int32_t)log2(xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int());
+      }
+      else
+      {
+        nbits = xmlCache.attribute(XMLNODE_CACHE_NBITS).as_int();
+      }
+      cache.reset(new NewCache(
+          nbits, xmlCache.attribute(XMLNODE_CACHE_KBITS).as_int()));
+    }
+    else if (cacheType == WayPartitionCache::CACHE_TYPESTR)
+    {
+      int32_t nWays = xmlCache.attribute(XMLNODE_CACHE_NWAYS).as_int();
+      int32_t nSecWays = xmlCache.attribute(XMLNODE_CACHE_NSECWAYS).as_int();
+      cache.reset(new WayPartitionCache(
+          strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG).as_string()],
+          xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int() / nWays, nWays,
+          nSecWays));
+    }
+    else if (cacheType == PLcache::CACHE_TYPESTR)
+    {
+      int32_t nWays = xmlCache.attribute(XMLNODE_CACHE_NWAYS).as_int();
+      cache.reset(new PLcache(
+          strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG).as_string()],
+          xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int() / nWays, nWays));
+    }
+    else if (cacheType == AssocPLcache::CACHE_TYPESTR)
+    {
+      cache.reset(new AssocPLcache(
+          strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG).as_string()],
+          xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int()));
+    }
+    else if (cacheType == CEASERCache::CACHE_TYPESTR)
+    {
+      int32_t nWays = xmlCache.attribute(XMLNODE_CACHE_NWAYS).as_int();
+      cache.reset(new CEASERCache(
+          strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG).as_string()],
+          xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int() / nWays, nWays));
+    }
+    else if (cacheType == CEASERSCache::CACHE_TYPESTR)
+    {
+      int32_t nWays = xmlCache.attribute(XMLNODE_CACHE_NWAYS).as_int();
+      cache.reset(new CEASERSCache(
+          xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int() / nWays, nWays,
+          xmlCache.attribute(XMLNODE_CACHE_NPARTITIONS).as_int()));
+    }
+    else if (cacheType == PhantomCache::CACHE_TYPESTR)
+    {
+      int32_t nWays = xmlCache.attribute(XMLNODE_CACHE_NWAYS).as_int();
+      cache.reset(new PhantomCache(
+          strRepAlgMap[xmlCache.attribute(XMLNODE_CACHE_REPLALG).as_string()],
+          xmlCache.attribute(XMLNODE_CACHE_NLINES).as_int() / nWays, nWays,
+          xmlCache.attribute(XMLNODE_CACHE_NRANDOMSETS).as_int()));
+    }
   }
 
   return cache;
