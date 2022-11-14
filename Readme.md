@@ -132,3 +132,11 @@ To use the cache configuration editor, simply run the following command
 This will launch the graphical user interface for the cache editor, this utility can be used to create new, and modify existing cache configurations.
 
 ![screenshot](screenshots/xmlgui.png)
+
+## Acknowledgments
+This project has been supported by
+* An ARC Discovery Early Career Researcher Award (project number DE200101577)
+* An ARC Discovery Project (project number DP210102670)
+* The Blavatnik ICRC at Tel-Aviv University
+* Data61, CSIRO
+* a gift from Intel
